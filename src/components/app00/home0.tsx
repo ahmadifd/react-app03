@@ -10,10 +10,10 @@ const Child1 = () => {
       <div className="p-2">
         <div className="m-5">
           <Button as="a" variant="primary">
-            Button as link
+            Button as link1
           </Button>
           <Button as="a" variant="success">
-            Button as link
+            Button as link1
           </Button>
         </div>
         <div className="m-5">
