@@ -1,26 +1,17 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./home0/index.css";
 import { useEffect } from "react";
-import Button from "react-bootstrap/Button";
+import Button from "@mui/material/Button";
+import { Person } from "@mui/icons-material";
 
 const Child1 = () => {
   useEffect(() => {}, []);
 
   return (
     <>
-      <div className="p-2">
-        <div className="m-5">
-          <Button as="a" variant="primary">
-            Button as link1
-          </Button>
-          <Button as="a" variant="success">
-            Button as link1
-          </Button>
-        </div>
-        <div className="m-5">
-          <button className="btn btn-primary"> Button as link</button>
-          <button className="btn btn-success"> Button as link</button>
-        </div>
-      </div>
+      <Button variant="contained" color="primary" startIcon={<Person />}>
+        سلام دنیا
+      </Button>
     </>
   );
 };
