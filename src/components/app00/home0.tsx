@@ -1,18 +1,10 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./home0/index.css";
-import { useEffect } from "react";
-
-
 
 
 const Child1 = () => {
-  useEffect(() => {}, []);
 
-  return (
-    <>
-    
-    </>
-  );
+  return <></>;
 };
 
 const Home0 = () => {
