@@ -1,12 +1,11 @@
 import Home0 from "../components/app00/home0";
 
-
-function App() {
+const App00 = () => {
   return (
     <>
       <Home0 />
     </>
   );
-}
+};
 
-export default App;
+export default App00;
