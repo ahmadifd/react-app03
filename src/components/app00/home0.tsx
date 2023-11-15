@@ -120,7 +120,7 @@ import { useEffect, useState } from "react";
 const Child4 = () => {
   const [count, setCount] = useState<number>(1);
 
-  useEffect(() => {
+  useEffect(() => { 
     console.log(count);
   }, [count]);
 
