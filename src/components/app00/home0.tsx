@@ -130,7 +130,7 @@ const Child4 = () => {
 
   return (
     <>
-      <button onClick={onClick1}>onclick1</button>
+      <button onClick={onClick1}>onclick-one</button>
     </>
   );
 };
