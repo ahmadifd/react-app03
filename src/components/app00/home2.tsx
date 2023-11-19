@@ -1,9 +1,11 @@
 import {
   createSlice,
   createAsyncThunk,
+  createSelector,
+  createEntityAdapter,
   configureStore,
-  SerializedError,
 } from "@reduxjs/toolkit";
+import { sub } from "date-fns";
 import axios from "axios";
 import {
   Provider,
@@ -14,32 +16,24 @@ import {
 
 const POSTS_URL = "https://jsonplaceholder.typicode.com/posts";
 
-type Post = {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-};
+const postsAdapter = createEntityAdapter({
+  sortComparer: (a, b) => b.date.localeCompare(a.date),
+});
 
-type PostState = {
-  posts: Post[];
-  status: string;
-  error: SerializedError | null;
-};
-
-const initialStatePost: PostState = {
-  posts: [],
+const initialState = postsAdapter.getInitialState({
   status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
-};
+  count: 0,
+});
 
-const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-  return await axios.get(POSTS_URL).then((res) => res.data);
+export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
+  const response = await axios.get(POSTS_URL);
+  return response.data;
 });
 
 const postsSlice = createSlice({
   name: "posts",
-  initialState: initialStatePost,
+  initialState,
   reducers: {},
   extraReducers(builder) {
     builder
@@ -48,12 +42,26 @@ const postsSlice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.posts = action.payload;
-        state.error = null!;
+        // Adding date and reactions
+        let min = 1;
+        const loadedPosts = action.payload.map((post) => {
+          post.date = sub(new Date(), { minutes: min++ }).toISOString();
+          post.reactions = {
+            thumbsUp: 0,
+            wow: 0,
+            heart: 0,
+            rocket: 0,
+            coffee: 0,
+          };
+          return post;
+        });
+
+        // Add any fetched posts to the array
+        postsAdapter.upsertMany(state, loadedPosts);
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error;
+        state.error = action.error.message;
       });
   },
 });
@@ -64,29 +72,27 @@ export const store = configureStore({
   },
 });
 
-
 type RootState = ReturnType<typeof store.getState>;
 const useAppDispatch: () => typeof store.dispatch = useDispatch;
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const Child1 = () => {
-   const posts = useAppSelector((state) => state.posts);
-   console.log(posts);
+  const posts = useAppSelector((state) => state.posts);
+  console.log(posts);
 
   return <></>;
 };
 
-const Home1 = () => {
+const Home2 = () => {
   store.dispatch(fetchPosts());
+
   return (
     <>
-      {/* <React.StrictMode> */}
       <Provider store={store}>
         <Child1 />
       </Provider>
-      {/* </React.StrictMode> */}
     </>
   );
 };
 
-export default Home1;
+export default Home2;
